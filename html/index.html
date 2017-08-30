@@ -6,7 +6,10 @@
         <title>AlanCad - A toy matrix method cad program (Under Construction)</title>
         <script type="text/javascript" src="../js/three.js"></script>
         <script type="text/javascript" src="../js/OrbitControls.js"></script>
+        <script type="text/javascript" src="../js/dat.gui.js"></script>
+
         <script type="text/javascript" src="../js/draw.js"></script>
+        <script type="text/javascript" src="../js/dat_controller.js"></script>
         <script type="text/javascript" src="../js/structure.js"></script>
         <script type="text/javascript" src="../js/jquery-1.9.0.js"></script>
 
@@ -30,6 +33,7 @@
             var renderer;
             var draw;
             var structure;
+            var datCont;
 
             function init() {
                 scene = new THREE.Scene();
@@ -67,12 +71,8 @@
 
                 structure = Structure();
                 draw = Draw(scene, structure);                
-                draw.redraw();
-                structure.addNode(1,2,3);
-                draw.redraw();
-                alert("another");
-                structure.addNode(11,2,-15);
-                draw.redraw();
+                gui = new dat.GUI();
+                datCont = DatController(gui, structure, draw);
 
                 var clock = new THREE.Clock();
                 function render() {

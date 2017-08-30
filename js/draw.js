@@ -12,16 +12,7 @@ function Draw(sc, st) {
                 var x = structure.nodes[i].x;
                 var y = structure.nodes[i].y;
                 var z = structure.nodes[i].z; 
-                // create a cube
-                var cubeGeometry = new THREE.BoxGeometry(4,4,4);
-                var cubeMaterial = new THREE.MeshLambertMaterial({color: 0x00ff00});
-                var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-
-                cube.castShadow = true;
-                cube.position.x = x;
-                cube.position.y = y;
-                cube.position.z = z;
-                scene.add(cube);
+                drawNode(x,y,z);
             }
 
             for(var i = 0; i < structure.elements.length; i++) {
@@ -42,5 +33,16 @@ function Draw(sc, st) {
         }
     }
 
+    function drawNode(x,y,z,s) {
+        // create a cube
+        var geometry = new THREE.SphereGeometry(2,20,20);
+        var material = new THREE.MeshLambertMaterial({color: 0x00ff00});
+        var mesh = new THREE.Mesh(geometry, material);
+
+        mesh.position.x = x;
+        mesh.position.y = y;
+        mesh.position.z = z;
+        scene.add(mesh);
+    }
     return draw;
 }

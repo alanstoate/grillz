@@ -30,6 +30,12 @@ function Structure() {
         this.addLoad = function(_element, _loadType, _pos, _magnitude) {
 
         }
+
+        this.reset = function() {
+            this.nodes.length = 0;
+            this.elements.length = 0;
+            this.loads.length = 0;
+        }
     }
 
     return structure;
