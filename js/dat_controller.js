@@ -34,13 +34,14 @@ function DatController(g, st, d) {
             structure.addElement(this.n1, this.n2);
             resetElements(this);
             d.redraw();
+            updateLoadGUI();
         }
 
         // Loads
         function resetLoads(t) {
             t.element = '';
-            t.magnitude = '';
             t.type = '';
+            t.magnitude = '';
         }
         resetLoads(this);
 
@@ -58,9 +59,9 @@ function DatController(g, st, d) {
 
     // Nodes
     var f1 = gui.addFolder('Add Node');
-    f1.add(controls, 'x', 0, 10).listen();
-    f1.add(controls, 'y', 0, 10).listen();
-    f1.add(controls, 'z', 0, 10).listen();
+    f1.add(controls, 'x').listen();
+    f1.add(controls, 'y').listen();
+    f1.add(controls, 'z').listen();
     f1.add(controls, 'addNode');
 
     // Elements
@@ -79,10 +80,14 @@ function DatController(g, st, d) {
     // Loads
     var f3 = gui.addFolder('Add Load');
     f3.add(controls, 'addLoad');
-    // TODO Change to element array
-    elist = f3.add(controls, 'element', structure.getNodeArray()).listen();
+    f3.add(controls, 'type', ['UDL', 'Point']).listen();
+    f3.add(controls, 'magnitude').listen();
+    elist = f3.add(controls, 'element', structure.getElementArray()).listen();
+
+    function updateLoadGUI() {
+        f3.remove(elist);
+        elist = f3.add(controls, 'element', structure.getElementArray()).listen();
+    }
 
     gui.add(controls, 'clear');
-
-
 }

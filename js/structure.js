@@ -12,6 +12,14 @@ function Structure() {
             return arr;
         }
 
+        this.getElementArray = function() {
+            var arr = [];
+            for(var i = 0; i < this.elements.length; i++) {
+                arr.push(i);
+            }
+            return arr;
+        }
+
         this.addNode = function(_x, _y, _z) {
             this.nodes.push( {
                 x: parseFloat(_x),
@@ -27,8 +35,12 @@ function Structure() {
             });
         }
 
-        this.addLoad = function(_element, _loadType, _pos, _magnitude) {
-
+        this.addLoad = function(_element, _loadType, _mag) {
+            this.loads.push({
+                element: _element,
+                loadtype: _loadType,
+                magnitude: _mag
+            });
         }
 
         this.reset = function() {
