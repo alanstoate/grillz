@@ -1,6 +1,7 @@
 function Draw(sc, st) {
     var scene = sc;
     var structure = st;
+
     var draw = new function() {
         this.redraw = function(){
             while(scene.children.length > 3){ 
@@ -9,32 +10,18 @@ function Draw(sc, st) {
             }
 
             for(var i = 0; i < structure.nodes.length; i++) {
-                var x = structure.nodes[i].x;
-                var y = structure.nodes[i].y;
-                var z = structure.nodes[i].z; 
-                drawNode(x,y,z);
+                drawNode(structure.nodes[i].x,
+                    structure.nodes[i].y,
+                    structure.nodes[i].z); 
             }
 
             for(var i = 0; i < structure.elements.length; i++) {
-                var n1 = structure.elements[i].n1;
-                var n2 = structure.elements[i].n2;
-
-                var material = new THREE.LineBasicMaterial({
-                    color: 0x0000ff
-                }); var geometry = new THREE.Geometry();
-                geometry.vertices.push(
-                    new THREE.Vector3(n1.x, n1.y, n1.z),
-                    new THREE.Vector3(n2.x, n2.y, n2.z),
-                );
-
-                var line = new THREE.Line( geometry, material );
-                scene.add( line );
+                drawElement(structure.elements[i].n1, structure.elements[i].n2);
             }
         }
     }
 
-    function drawNode(x,y,z,s) {
-        // create a cube
+    function drawNode(x,y,z) {
         var geometry = new THREE.SphereGeometry(2,20,20);
         var material = new THREE.MeshLambertMaterial({color: 0x00ff00});
         var mesh = new THREE.Mesh(geometry, material);
@@ -44,5 +31,36 @@ function Draw(sc, st) {
         mesh.position.z = z;
         scene.add(mesh);
     }
+
+    function drawElement(n1, n2) {
+        var x1 = n1.x;
+        var y1 = n1.y;
+        var z1 = n1.z;
+        
+        var x2 = n2.x;
+        var y2 = n2.y;
+        var z2 = n2.z;
+
+        var length = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)+(z2-z1)*(z2-z1));
+
+        var geometry = new THREE.BoxGeometry(length,1,1);
+        var material = new THREE.MeshLambertMaterial({color: 0x0000ff});
+        var mesh = new THREE.Mesh(geometry, material);
+
+        scene.add(mesh);
+
+        var roty = Math.atan((z2 - z1) / (x2 - x1));
+
+        var xzlen = Math.sqrt((x2-x1)*(x2-x1)+(z2-z1)*(z2-z1));
+        var rotz  = Math.atan((y2 - y1) / xzlen);
+
+        mesh.position.x = (x1 + x2) / 2;
+        mesh.position.y = (y1 + y2) / 2;
+        mesh.position.z = (z1 + z2) / 2;
+
+        mesh.rotation.y = -roty;
+        mesh.rotation.z = rotz;
+    }
+
     return draw;
 }

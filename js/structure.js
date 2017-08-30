@@ -14,9 +14,9 @@ function Structure() {
 
         this.addNode = function(_x, _y, _z) {
             this.nodes.push( {
-                x: _x,
-                y: _y,
-                z: _z
+                x: parseFloat(_x),
+                y: parseFloat(_y),
+                z: parseFloat(_z)
             });
         }
 
