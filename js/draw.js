@@ -3,6 +3,10 @@ function Draw(sc, st) {
     var structure = st;
 
     var draw = new function() {
+        this.settings = {
+            drawLoads: true 
+        }
+
         this.redraw = function(){
             while(scene.children.length > 2){ 
                 var l = scene.children.length;
@@ -19,8 +23,10 @@ function Draw(sc, st) {
                 drawElement(structure.elements[i].n1, structure.elements[i].n2);
             }
 
-            for(var i = 0; i < structure.loads.length; i++) {
-                drawLoads(structure.loads[i]);
+            if (this.settings.drawLoads == true) {
+                for(var i = 0; i < structure.loads.length; i++) {
+                    drawLoads(structure.loads[i]);
+                }
             }
         }
     }
@@ -86,15 +92,6 @@ function Draw(sc, st) {
             geometry.vertices.push(new THREE.Vector3(x,y,load));
             var line = new THREE.Line(geometry, material);
             scene.add(line);
-
-//            var geometry = new THREE.ConeGeometry( 0.05, 0.2, 10);
- //           var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-  //          var cone = new THREE.Mesh( geometry, material );
-   //         scene.add( cone );
-    //        cone.position.x = x;
-     //       cone.position.z = 0.2;
-      //      cone.position.y = -z;
-       //     cone.rotation.x = 3.14;
         }
     }
 

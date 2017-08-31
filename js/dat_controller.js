@@ -3,89 +3,113 @@ function DatController(g, st, d) {
     var structure = st;
     var draw = d;
 
-    var controls = new function() {
-        // Nodes
-        function resetNodes(t) {
-            t.x = '0';
-            t.y = '0';
-        }
-        resetNodes(this);
+    // Components controls --------------------------------------------------------------------
+    {
+        var components_controls = new function() {
+            // Nodes ----------------------------------------
+            function resetNodes(t) {
+                t.x = '0';
+                t.y = '0';
+            }
+            resetNodes(this);
 
-        this.addNode = function() {
-            if(isNaN(this.x) || isNaN(this.y))
-                alert("enter a valid number");
-            else {
-                structure.addNode(this.x, this.y);
-                resetNodes(this);
+            this.addNode = function() {
+                if(isNaN(this.x) || isNaN(this.y))
+                    alert("enter a valid number");
+                else {
+                    structure.addNode(this.x, this.y);
+                    resetNodes(this);
+                    d.redraw();
+                    updateElementGUI();
+                }
+            }
+
+            // Elements---------------------------------------- 
+            function resetElements(t) {
+                t.n1 = '0';
+                t.n2 = '0';
+            }
+            resetElements(this);
+
+            this.addElement = function() {
+                structure.addElement(this.n1, this.n2);
+                resetElements(this);
                 d.redraw();
-                updateElementGUI();
+                updateLoadGUI();
+            }
+
+            // Loads----------------------------------------
+            function resetLoads(t) {
+                t.element = '';
+                t.type = '';
+                t.magnitude = '';
+            }
+            resetLoads(this);
+
+            this.addLoad = function() {
+                structure.addLoad(this.element, this.type, this.magnitude);
+                resetLoads(this);
+                d.redraw();
+            }
+            // Clear ----------------------------------------
+            this.clear = function () {
+                structure.reset();
+                draw.redraw();
             }
         }
 
-        // Elements 
-        function resetElements(t) {
-            t.n1 = '0';
-            t.n2 = '0';
-        }
-        resetElements(this);
+        // Nodes
+        var components_group = gui.addFolder('Add Components');
+        components_group.open();
+        var f1 = components_group.addFolder('Add Node');
+        f1.add(components_controls, 'x').listen();
+        f1.add(components_controls, 'y').listen();
+        f1.add(components_controls, 'addNode');
 
-        this.addElement = function() {
-            structure.addElement(this.n1, this.n2);
-            resetElements(this);
-            d.redraw();
-            updateLoadGUI();
+        // Elements
+        var f2 = components_group.addFolder('Add Element');
+        n1list = f2.add(components_controls, 'n1', structure.getNodeArray()).listen();
+        n2list = f2.add(components_controls, 'n2', structure.getNodeArray()).listen();
+        f2.add(components_controls, 'addElement');
+
+        function updateElementGUI() {
+            f2.remove(n1list);
+            f2.remove(n2list);
+            n1list = f2.add(components_controls, 'n1', structure.getNodeArray()).listen();
+            n2list = f2.add(components_controls, 'n2', structure.getNodeArray()).listen();
         }
 
         // Loads
-        function resetLoads(t) {
-            t.element = '';
-            t.type = '';
-            t.magnitude = '';
-        }
-        resetLoads(this);
+        var f3 = components_group.addFolder('Add Load');
+        f3.add(components_controls, 'addLoad');
+        f3.add(components_controls, 'type', ['UDL', 'Point']).listen();
+        f3.add(components_controls, 'magnitude').listen();
+        elist = f3.add(components_controls, 'element', structure.getElementArray()).listen();
 
-        this.addLoad = function() {
-            structure.addLoad(this.element, this.type, this.magnitude);
-            resetLoads(this);
-            d.redraw();
+        function updateLoadGUI() {
+            f3.remove(elist);
+            elist = f3.add(components_controls, 'element', structure.getElementArray()).listen();
         }
 
-        this.clear = function () {
-            structure.reset();
+        components_group.add(components_controls, 'clear');
+    }
+
+    // Settings controls --------------------------------------------------------------------
+    {
+        // Controls
+        var settings_controls = new function() {
+            this.showLoads = false; 
+        }
+
+        // Add buttons to gui
+        var settings_group = gui.addFolder('Settings');
+        settings_group.open();
+        show = settings_group.add(settings_controls, 'showLoads', false);
+
+        // Event listeners
+        show.onChange(function(value) {
+            draw.settings.drawLoads = value;
             draw.redraw();
-        }
+        });
     }
-
-    // Nodes
-    var f1 = gui.addFolder('Add Node');
-    f1.add(controls, 'x').listen();
-    f1.add(controls, 'y').listen();
-    f1.add(controls, 'addNode');
-
-    // Elements
-    var f2 = gui.addFolder('Add Element');
-    n1list = f2.add(controls, 'n1', structure.getNodeArray()).listen();
-    n2list = f2.add(controls, 'n2', structure.getNodeArray()).listen();
-    f2.add(controls, 'addElement');
-
-    function updateElementGUI() {
-        f2.remove(n1list);
-        f2.remove(n2list);
-        n1list = f2.add(controls, 'n1', structure.getNodeArray()).listen();
-        n2list = f2.add(controls, 'n2', structure.getNodeArray()).listen();
-    }
-
-    // Loads
-    var f3 = gui.addFolder('Add Load');
-    f3.add(controls, 'addLoad');
-    f3.add(controls, 'type', ['UDL', 'Point']).listen();
-    f3.add(controls, 'magnitude').listen();
-    elist = f3.add(controls, 'element', structure.getElementArray()).listen();
-
-    function updateLoadGUI() {
-        f3.remove(elist);
-        elist = f3.add(controls, 'element', structure.getElementArray()).listen();
-    }
-
-    gui.add(controls, 'clear');
 }
