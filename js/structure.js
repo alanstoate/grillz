@@ -1,9 +1,11 @@
 function Structure() {
     var structure = new function () {
+        // Data members
         this.nodes = [];
         this.elements = [];
         this.loads = [];
 
+        // Returns string array of node numbers
         this.getNodeArray = function() {
             var arr = [];
             for(var i = 0; i < this.nodes.length; i++) {
@@ -12,6 +14,7 @@ function Structure() {
             return arr;
         }
 
+        // Returns string array of element numbers
         this.getElementArray = function() {
             var arr = [];
             for(var i = 0; i < this.elements.length; i++) {
@@ -20,11 +23,10 @@ function Structure() {
             return arr;
         }
 
-        this.addNode = function(_x, _y, _z) {
+        this.addNode = function(_x, _y) {
             this.nodes.push( {
                 x: parseFloat(_x),
-                y: parseFloat(_y),
-                z: parseFloat(_z)
+                y: parseFloat(_y)
             });
         }
 

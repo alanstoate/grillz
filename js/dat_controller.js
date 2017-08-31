@@ -8,15 +8,14 @@ function DatController(g, st, d) {
         function resetNodes(t) {
             t.x = '0';
             t.y = '0';
-            t.z = '0';
         }
         resetNodes(this);
 
         this.addNode = function() {
-            if(isNaN(this.x) || isNaN(this.y) || isNaN(this.z))
+            if(isNaN(this.x) || isNaN(this.y))
                 alert("enter a valid number");
             else {
-                structure.addNode(this.x, this.y, this.z);
+                structure.addNode(this.x, this.y);
                 resetNodes(this);
                 d.redraw();
                 updateElementGUI();
@@ -46,7 +45,7 @@ function DatController(g, st, d) {
         resetLoads(this);
 
         this.addLoad = function() {
-            structure.addLoad(this.element, this.magnitude, this.type);
+            structure.addLoad(this.element, this.type, this.magnitude);
             resetLoads(this);
             d.redraw();
         }
@@ -61,7 +60,6 @@ function DatController(g, st, d) {
     var f1 = gui.addFolder('Add Node');
     f1.add(controls, 'x').listen();
     f1.add(controls, 'y').listen();
-    f1.add(controls, 'z').listen();
     f1.add(controls, 'addNode');
 
     // Elements

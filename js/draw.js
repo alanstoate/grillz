@@ -4,44 +4,45 @@ function Draw(sc, st) {
 
     var draw = new function() {
         this.redraw = function(){
-            while(scene.children.length > 3){ 
+            while(scene.children.length > 2){ 
                 var l = scene.children.length;
                 scene.remove(scene.children[l - 1]); 
             }
 
             for(var i = 0; i < structure.nodes.length; i++) {
                 drawNode(structure.nodes[i].x,
-                    structure.nodes[i].y,
-                    structure.nodes[i].z); 
+                    structure.nodes[i].y
+                ); 
             }
 
             for(var i = 0; i < structure.elements.length; i++) {
                 drawElement(structure.elements[i].n1, structure.elements[i].n2);
             }
+
+            for(var i = 0; i < structure.loads.length; i++) {
+                drawLoads(structure.loads[i]);
+            }
         }
     }
 
-    function drawNode(x,y,z) {
+    function drawNode(x,y) {
         var geometry = new THREE.SphereGeometry(2,20,20);
         var material = new THREE.MeshLambertMaterial({color: 0x00ff00});
         var mesh = new THREE.Mesh(geometry, material);
 
         mesh.position.x = x;
         mesh.position.y = y;
-        mesh.position.z = z;
         scene.add(mesh);
     }
 
     function drawElement(n1, n2) {
         var x1 = n1.x;
         var y1 = n1.y;
-        var z1 = n1.z;
-        
+
         var x2 = n2.x;
         var y2 = n2.y;
-        var z2 = n2.z;
 
-        var length = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)+(z2-z1)*(z2-z1));
+        var length = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 
         var geometry = new THREE.BoxGeometry(length,1,1);
         var material = new THREE.MeshLambertMaterial({color: 0x0000ff});
@@ -49,17 +50,52 @@ function Draw(sc, st) {
 
         scene.add(mesh);
 
-        var roty = Math.atan((z2 - z1) / (x2 - x1));
-
-        var xzlen = Math.sqrt((x2-x1)*(x2-x1)+(z2-z1)*(z2-z1));
-        var rotz  = Math.atan((y2 - y1) / xzlen);
+        var rotz = Math.atan((y2 - y1) / (x2 - x1));
 
         mesh.position.x = (x1 + x2) / 2;
         mesh.position.y = (y1 + y2) / 2;
-        mesh.position.z = (z1 + z2) / 2;
 
-        mesh.rotation.y = -roty;
         mesh.rotation.z = rotz;
+    }
+
+    function drawLoads(l) {
+        var load = l.magnitude;
+        var e = structure.elements[l.element];
+
+        var n1 = e.n1;
+        var n2 = e.n2;
+
+        var x1 = n1.x;
+        var y1 = n1.y;
+
+        var x2 = n2.x;
+        var y2 = n2.y;
+
+        var length = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
+
+        var dx = x2 - x1;
+        var dy = y2 - y1;
+
+        for(var i = 0; i < 11; i++) {
+            var x = x1 + (dx) * (i / 10);
+            var y = y1 + (dy) * (i / 10);
+
+            var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(new THREE.Vector3(x,y,0.1));
+            geometry.vertices.push(new THREE.Vector3(x,y,load));
+            var line = new THREE.Line(geometry, material);
+            scene.add(line);
+
+//            var geometry = new THREE.ConeGeometry( 0.05, 0.2, 10);
+ //           var material = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+  //          var cone = new THREE.Mesh( geometry, material );
+   //         scene.add( cone );
+    //        cone.position.x = x;
+     //       cone.position.z = 0.2;
+      //      cone.position.y = -z;
+       //     cone.rotation.x = 3.14;
+        }
     }
 
     return draw;
