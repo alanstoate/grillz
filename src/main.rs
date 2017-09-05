@@ -1,47 +1,66 @@
-extern crate serde;
-extern crate serde_json;
+#![feature(plugin)]
+#![plugin(rocket_codegen)]
 
-#[macro_use]
-extern crate serde_derive;
+extern crate rocket;
 
-use serde_json::Error;
+use rocket::response::{NamedFile, content};
 
-#[derive(Serialize, Deserialize)]
-struct Node {
-    x: u8,
-    y: u8,
+#[get("/js/three.js")]
+fn js_grill() -> content::Html<NamedFile> {
+    let file = NamedFile::open("js/three.js");
+    content::Html(file.unwrap())
 }
 
-#[derive(Serialize, Deserialize)]
-struct Element {
-    n1: u8,
-    n2: u8,
+#[get("/js/draw.js")]
+fn js_draw() -> content::Html<NamedFile> {
+    let file = NamedFile::open("js/draw.js");
+    content::Html(file.unwrap())
 }
 
-#[derive(Serialize, Deserialize)]
-struct Load {
-    element: u8,
-    loadtype: String,
-    magnitude: u8,
+#[get("/js/dat_controller.js")]
+fn js_dat_controller() -> content::Html<NamedFile> {
+    let file = NamedFile::open("js/dat_controller.js");
+    content::Html(file.unwrap())
 }
 
+#[get("/js/dat.gui.js")]
+fn js_dat_gui() -> content::Html<NamedFile> {
+    let file = NamedFile::open("js/dat.gui.js");
+    content::Html(file.unwrap())
+}
 
-#[derive(Serialize, Deserialize)]
-struct Structure {
-    nodes: Vec<Node>,
-    elements: Vec<Element>,
-    loads: Vec<Load>,
+#[get("/js/OrbitControls.js")]
+fn js_orbit() -> content::Html<NamedFile> {
+    let file = NamedFile::open("js/OrbitControls.js");
+    content::Html(file.unwrap())
+}
+
+#[get("/js/structure.js")]
+fn js_structure() -> content::Html<NamedFile> {
+    let file = NamedFile::open("js/structure.js");
+    content::Html(file.unwrap())
+}
+/*
+#[get("/calculate?<n>")]
+fn calculate(n: &str) -> String {
+    run_calculation(n.to_owned())
+}
+*/
+
+#[get("/")]
+fn index() -> content::Html<NamedFile> {
+    let file = NamedFile::open("html/index.html");
+    content::Html(file.unwrap())
 }
 
 fn main() {
-    let n1 = Node{ x: 10, y:0 };
-    let n2 = Node{ x: 10, y:10 };
-
-    let e1 = Element{ n1: 0, n2: 1};
-
-    let l = Load{element: 0, loadtype: "UDL".to_string(), magnitude: 15};
-    let s = Structure{nodes: vec![n1,n2], elements: vec! [e1], loads: vec![l]};
-
-    let serialized = serde_json::to_string(&s).unwrap();
-    println!("serialized = {}", serialized);
+    rocket::ignite()
+        .mount("/", routes![index])
+        .mount("/", routes![js_grill])
+        .mount("/", routes![js_draw])
+        .mount("/", routes![js_dat_controller])
+        .mount("/", routes![js_dat_gui])
+        .mount("/", routes![js_orbit])
+        .mount("/", routes![js_structure])
+        .launch();
 }
