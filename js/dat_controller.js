@@ -1,4 +1,4 @@
-function DatController(g, st, d) {
+function DatController(g, st, d, calcCall) {
     var gui = g;
     var structure = st;
     var draw = d;
@@ -10,6 +10,7 @@ function DatController(g, st, d) {
             function resetNodes(t) {
                 t.x = '0';
                 t.y = '0';
+                t.fixed = false;
             }
             resetNodes(this);
 
@@ -17,7 +18,7 @@ function DatController(g, st, d) {
                 if(isNaN(this.x) || isNaN(this.y))
                     alert("enter a valid number");
                 else {
-                    structure.addNode(this.x, this.y);
+                    structure.addNode(this.x, this.y, this.fixed);
                     resetNodes(this);
                     d.redraw();
                     updateElementGUI();
@@ -64,6 +65,7 @@ function DatController(g, st, d) {
         var f1 = components_group.addFolder('Add Node');
         f1.add(components_controls, 'x').listen();
         f1.add(components_controls, 'y').listen();
+        f1.add(components_controls, 'fixed', [true,false]).listen();
         f1.add(components_controls, 'addNode');
 
         // Elements
@@ -99,12 +101,16 @@ function DatController(g, st, d) {
         // Controls
         var settings_controls = new function() {
             this.showLoads = false; 
+            this.calculate = function () {
+                calcCall();
+            }
         }
 
         // Add buttons to gui
         var settings_group = gui.addFolder('Settings');
         settings_group.open();
         show = settings_group.add(settings_controls, 'showLoads', false);
+        settings_group.add(settings_controls, 'calculate');
 
         // Event listeners
         show.onChange(function(value) {

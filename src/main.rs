@@ -1,7 +1,12 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
-
 extern crate rocket;
+
+#[macro_use]
+extern crate serde_derive;
+
+pub mod parser;
+use parser::run_calculation;
 
 use rocket::response::{NamedFile, content};
 
@@ -40,12 +45,11 @@ fn js_structure() -> content::Html<NamedFile> {
     let file = NamedFile::open("js/structure.js");
     content::Html(file.unwrap())
 }
-/*
+
 #[get("/calculate?<n>")]
 fn calculate(n: &str) -> String {
-    run_calculation(n.to_owned())
+    run_calculation(str::replace(n, "%22", "\""))
 }
-*/
 
 #[get("/")]
 fn index() -> content::Html<NamedFile> {
@@ -62,5 +66,6 @@ fn main() {
         .mount("/", routes![js_dat_gui])
         .mount("/", routes![js_orbit])
         .mount("/", routes![js_structure])
+        .mount("/", routes![calculate])
         .launch();
 }

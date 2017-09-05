@@ -13,10 +13,9 @@ function Draw(sc, st) {
                 scene.remove(scene.children[l - 1]); 
             }
 
+            // Draw all nodes
             for(var i = 0; i < structure.nodes.length; i++) {
-                drawNode(structure.nodes[i].x,
-                    structure.nodes[i].y
-                ); 
+                drawNode(structure.nodes[i]); 
             }
 
             for(var i = 0; i < structure.elements.length; i++) {
@@ -31,22 +30,25 @@ function Draw(sc, st) {
         }
     }
 
-    function drawNode(x,y) {
+    function drawNode(n) {
         var geometry = new THREE.SphereGeometry(2,20,20);
-        var material = new THREE.MeshLambertMaterial({color: 0x00ff00});
+        if(n.fixed == true) 
+            var material = new THREE.MeshLambertMaterial({color: 0x00ff00});
+        else
+            var material = new THREE.MeshLambertMaterial({color: 0xff0000});
         var mesh = new THREE.Mesh(geometry, material);
 
-        mesh.position.x = x;
-        mesh.position.y = y;
+        mesh.position.x = n.x;
+        mesh.position.y = n.y;
         scene.add(mesh);
     }
 
     function drawElement(n1, n2) {
-        var x1 = n1.x;
-        var y1 = n1.y;
+        var x1 = structure.nodes[n1].x;
+        var y1 = structure.nodes[n1].y;
 
-        var x2 = n2.x;
-        var y2 = n2.y;
+        var x2 = structure.nodes[n2].x;
+        var y2 = structure.nodes[n2].y;
 
         var length = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 
@@ -71,11 +73,11 @@ function Draw(sc, st) {
         var n1 = e.n1;
         var n2 = e.n2;
 
-        var x1 = n1.x;
-        var y1 = n1.y;
+        var x1 = structure.nodes[n1].x;
+        var y1 = structure.nodes[n1].y;
 
-        var x2 = n2.x;
-        var y2 = n2.y;
+        var x2 = structure.nodes[n2].x;
+        var y2 = structure.nodes[n2].y;
 
         var length = Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1));
 

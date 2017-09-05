@@ -11,7 +11,6 @@
         <script type="text/javascript" src="../js/draw.js"></script>
         <script type="text/javascript" src="../js/dat_controller.js"></script>
         <script type="text/javascript" src="../js/structure.js"></script>
-        <script type="text/javascript" src="../js/jquery-1.9.0.js"></script>
 
         <style>
             body{
@@ -75,7 +74,26 @@
                 structure = Structure();
                 draw = Draw(scene, structure);                
                 gui = new dat.GUI();
-                datCont = DatController(gui, structure, draw);
+
+                var calcCallback = function () {
+                    var xhttp = new XMLHttpRequest();
+
+                    var addressString = "http://localhost:8000/calculate";
+                    addressString += '?';
+                    addressString += JSON.stringify(structure);
+
+                    xhttp.onreadystatechange = function() {
+                        if(this.readyState == 4 && this.status == 200){
+                            console.log(xhttp.responseText);
+                        }
+                    }
+                    alert(addressString);
+
+                    xhttp.open("GET", addressString, true);
+                    xhttp.send();
+                }
+
+                datCont = DatController(gui, structure, draw, calcCallback);
 
                 var clock = new THREE.Clock();
                 function render() {
@@ -87,12 +105,12 @@
                 }
 
                 (function structureDebug() {
-                    structure.addNode(0,10);
-                    structure.addNode(10,0);
+                    structure.addNode(0,0, 'true');
+                    structure.addNode(10,0, 'false');
+                    structure.addNode(20,0, 'true');
                     structure.addElement(0,1);
+                    structure.addElement(1,2);
                     structure.addLoad(0, 'UDL', 5);
-
-                    alert(JSON.stringify(structure));
                 }());
                 draw.redraw();
                 render();

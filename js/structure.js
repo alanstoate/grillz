@@ -23,17 +23,18 @@ function Structure() {
             return arr;
         }
 
-        this.addNode = function(_x, _y) {
+        this.addNode = function(_x, _y, _fixed) {
             this.nodes.push( {
                 x: parseFloat(_x),
-                y: parseFloat(_y)
+                y: parseFloat(_y),
+                fixed: (_fixed === 'true')
             });
         }
 
         this.addElement = function(_n1, _n2) {
             this.elements.push( {
-                n1: this.nodes[_n1],
-                n2: this.nodes[_n2]
+                n1: _n1,
+                n2: _n2
             });
         }
 
