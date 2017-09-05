@@ -38,11 +38,12 @@ function Structure() {
             });
         }
 
-        this.addLoad = function(_element, _loadType, _mag) {
+        this.addLoad = function(_element, _loadType, _mag, _pos) {
             this.loads.push({
                 element: _element,
                 loadtype: _loadType,
-                magnitude: _mag
+                magnitude: _mag,
+                position: _pos
             });
         }
 

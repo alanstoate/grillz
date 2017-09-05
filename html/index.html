@@ -110,7 +110,8 @@
                     structure.addNode(20,0, 'true');
                     structure.addElement(0,1);
                     structure.addElement(1,2);
-                    structure.addLoad(0, 'UDL', 5);
+                    structure.addLoad(0, 'UDL', 5, 0.0);
+                    structure.addLoad(1, 'Point', 7.5, 2.5);
                 }());
                 draw.redraw();
                 render();

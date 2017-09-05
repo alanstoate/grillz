@@ -84,11 +84,24 @@ function Draw(sc, st) {
         var dx = x2 - x1;
         var dy = y2 - y1;
 
-        for(var i = 0; i < 11; i++) {
-            var x = x1 + (dx) * (i / 10);
-            var y = y1 + (dy) * (i / 10);
+        if(l.loadtype == 'UDL') {
+            for(var i = 0; i < 11; i++) {
+                var x = x1 + (dx) * (i / 10);
+                var y = y1 + (dy) * (i / 10);
 
-            var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+                var material = new THREE.LineBasicMaterial({ color: 0xff0000 });
+                var geometry = new THREE.Geometry();
+                geometry.vertices.push(new THREE.Vector3(x,y,0.1));
+                geometry.vertices.push(new THREE.Vector3(x,y,load));
+                var line = new THREE.Line(geometry, material);
+                scene.add(line);
+            }
+        }
+        else if(l.loadtype == 'Point') {
+            var x = x1 + dx * l.position / length;
+            var y = y1 + dy * l.position / length;
+
+            var material = new THREE.LineBasicMaterial({ color: 0x00ffff });
             var geometry = new THREE.Geometry();
             geometry.vertices.push(new THREE.Vector3(x,y,0.1));
             geometry.vertices.push(new THREE.Vector3(x,y,load));

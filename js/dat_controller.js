@@ -44,11 +44,12 @@ function DatController(g, st, d, calcCall) {
                 t.element = '';
                 t.type = '';
                 t.magnitude = '';
+                t.position = '';
             }
             resetLoads(this);
 
             this.addLoad = function() {
-                structure.addLoad(this.element, this.type, this.magnitude);
+                structure.addLoad(this.element, this.type, this.magnitude, this.position);
                 resetLoads(this);
                 d.redraw();
             }
@@ -86,6 +87,7 @@ function DatController(g, st, d, calcCall) {
         f3.add(components_controls, 'addLoad');
         f3.add(components_controls, 'type', ['UDL', 'Point']).listen();
         f3.add(components_controls, 'magnitude').listen();
+        f3.add(components_controls, 'position').listen();
         elist = f3.add(components_controls, 'element', structure.getElementArray()).listen();
 
         function updateLoadGUI() {

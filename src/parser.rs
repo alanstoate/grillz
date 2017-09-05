@@ -23,6 +23,7 @@ struct LoadSerial {
     pub element: usize,
     pub loadtype: String,
     pub magnitude: f64,
+    pub position: f64,
 }
 
 
@@ -47,7 +48,12 @@ pub fn run_calculation(input: String) -> String {
     }
 
     for l in &structure_serial.loads {
-        structure.add_element_load(l.element, l.magnitude, 0.1, LoadType::UDL);
+        let udl_string = "UDL".to_string();
+        let load_type = match &l.loadtype {
+            udl_string => LoadType::UDL,
+            _ => LoadType::PointLoad,  // Lazy here
+        };
+        structure.add_element_load(l.element, l.magnitude, l.position, load_type);
     }
 
     structure.run_calc();
