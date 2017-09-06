@@ -102,7 +102,8 @@ function DatController(g, st, d, calcCall) {
     {
         // Controls
         var settings_controls = new function() {
-            this.showLoads = false; 
+            this.showLoads = true; 
+            this.showDisplacements = true;
             this.calculate = function () {
                 calcCall();
             }
@@ -111,7 +112,8 @@ function DatController(g, st, d, calcCall) {
         // Add buttons to gui
         var settings_group = gui.addFolder('Settings');
         settings_group.open();
-        show = settings_group.add(settings_controls, 'showLoads', false);
+        show = settings_group.add(settings_controls, 'showLoads', true);
+        show_disp = settings_group.add(settings_controls, 'showDisplacements', true);
         settings_group.add(settings_controls, 'calculate');
 
         // Event listeners
@@ -119,5 +121,10 @@ function DatController(g, st, d, calcCall) {
             draw.settings.drawLoads = value;
             draw.redraw();
         });
+
+        show_disp.onChange(function(v) {
+            draw.settings.drawDisps = v;
+            draw.redraw();
+        })
     }
 }

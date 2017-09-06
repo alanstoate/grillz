@@ -4,7 +4,8 @@ function Draw(sc, st) {
 
     var draw = new function() {
         this.settings = {
-            drawLoads: true 
+            drawLoads: true, 
+            drawDisps: true
         }
 
         this.redraw = function(){
@@ -27,11 +28,17 @@ function Draw(sc, st) {
                     drawLoads(structure.loads[i]);
                 }
             }
+
+            if (this.settings.drawDisps == true) {
+                for(var i = 0; i < structure.nodes.length; i++) {
+                    drawDisps(structure.nodes[i]); 
+                }
+            }
         }
     }
 
     function drawNode(n) {
-        var geometry = new THREE.SphereGeometry(2,20,20);
+        var geometry = new THREE.SphereGeometry(1,20,20);
         if(n.fixed == true) 
             var material = new THREE.MeshLambertMaterial({color: 0x00ff00});
         else
@@ -101,12 +108,49 @@ function Draw(sc, st) {
             var x = x1 + dx * l.position / length;
             var y = y1 + dy * l.position / length;
 
-            var material = new THREE.LineBasicMaterial({ color: 0x00ffff });
+            var material = new THREE.LineBasicMaterial({ color: 0x009999 });
             var geometry = new THREE.Geometry();
             geometry.vertices.push(new THREE.Vector3(x,y,0.1));
             geometry.vertices.push(new THREE.Vector3(x,y,load));
             var line = new THREE.Line(geometry, material);
             scene.add(line);
+        }
+    }
+
+    function drawDisps(node) {
+        if(node.displacement != null) {
+            var x = node.x;              
+            var y = node.y;              
+
+            var rotX = node.displacement.rotX;
+            var rotY = node.displacement.rotY;
+            var transZ = node.displacement.transZ;
+
+
+            // Draw rotx
+            var material = new THREE.LineBasicMaterial({ color: 0x000099 });
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(new THREE.Vector3(x,y,0));
+            geometry.vertices.push(new THREE.Vector3(-rotX,y,0));
+            var line = new THREE.Line(geometry, material);
+            scene.add(line);
+
+            // Draw roty
+            var material = new THREE.LineBasicMaterial({ color: 0x000099 });
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(new THREE.Vector3(x,y,0));
+            geometry.vertices.push(new THREE.Vector3(x,-rotY,0));
+            var line = new THREE.Line(geometry, material);
+            scene.add(line);
+
+            // Draw transz 
+            var material = new THREE.LineBasicMaterial({ color: 0x000099 });
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push(new THREE.Vector3(x,y,0));
+            geometry.vertices.push(new THREE.Vector3(x,y,-transZ));
+            var line = new THREE.Line(geometry, material);
+            scene.add(line);
+
         }
     }
 

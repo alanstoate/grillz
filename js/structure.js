@@ -31,6 +31,16 @@ function Structure() {
             });
         }
 
+        this.addNodeDisplacements = function(disps) {
+            for (var i = 0; i < this.nodes.length; ++i) {
+                this.nodes[i].displacement = {
+                    rotX:       disps[i*3 + 0],
+                    rotY:       disps[i*3 + 1],
+                    transZ:     disps[i*3 + 2]
+                }
+            }
+        }
+
         this.addElement = function(_n1, _n2) {
             this.elements.push( {
                 n1: _n1,
