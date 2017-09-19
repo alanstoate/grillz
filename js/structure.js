@@ -8,14 +8,18 @@ function Structure() {
         // Returns string array of node numbers
         this.getNodeArray = function() {
             var arr = [];
-            this.nodes.forEach(function(x) {arr.push(x); });
+            for(var i = 0; i < this.nodes.length; i++) {
+                arr.push(i);
+            }
             return arr;
         }
 
         // Returns string array of element numbers
         this.getElementArray = function() {
             var arr = [];
-            this.elements.forEach(function(x){ arr.push(x); });
+            for(var i = 0; i < this.elements.length; i++) {
+                arr.push(i);
+            }
             return arr;
         }
 

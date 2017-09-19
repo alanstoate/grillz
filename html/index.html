@@ -77,9 +77,20 @@
                 scene.add(spotLight);
 
                 structure = Structure();
+                (function structureDebug() {
+                    structure.addNode(0,0, 'true');
+                    structure.addNode(10,0, 'false');
+                    structure.addNode(20,0, 'true');
+                    structure.addElement(0,1);
+                    structure.addElement(1,2);
+                    structure.addLoad(0, 'UDL', 5, 0.0);
+                    structure.addLoad(1, 'Point', 7.5, 2.5);
+                }());
                 draw = Draw(scene, structure);                
-                gui = new dat.GUI();
-                datCont = DatController(gui, structure, draw);
+                draw.redraw();
+                components_gui = new dat.GUI();
+                settings_gui = new dat.GUI();
+                datCont = DatController(components_gui, settings_gui, structure, draw);
 
                 var clock = new THREE.Clock();
                 function render() {
@@ -90,16 +101,6 @@
                     renderer.render(scene, camera);
                 }
 
-                (function structureDebug() {
-                    structure.addNode(0,0, 'true');
-                    structure.addNode(10,0, 'false');
-                    structure.addNode(20,0, 'true');
-                    structure.addElement(0,1);
-                    structure.addElement(1,2);
-                    structure.addLoad(0, 'UDL', 5, 0.0);
-                    structure.addLoad(1, 'Point', 7.5, 2.5);
-                }());
-                draw.redraw();
                 render();
             }
 

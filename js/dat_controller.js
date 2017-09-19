@@ -1,4 +1,4 @@
-function DatController(gui, structure, draw, calcCall) {
+function DatController(comp_gui, settings_gui, structure, draw, calcCall) {
 
 //////////////////////////////////////////////////////////////////////////////// 
     // Component Settings Controller
@@ -31,7 +31,7 @@ function DatController(gui, structure, draw, calcCall) {
             }
 
             addComponent(addNodeFunc, resetNodes);
-            updateElementGUI();
+            UpdateElementGUI();
         }
 
         // Elements---------------------------------------- 
@@ -46,7 +46,7 @@ function DatController(gui, structure, draw, calcCall) {
                 structure.addElement(cont.n1, cont.n2);
             }
 
-            addComponent(addElementFunc, resetElements, [updateLoadGUI]);
+            addComponent(addElementFunc, resetElements, [UpdateLoadGUI]);
         }
 
         // Loads----------------------------------------
@@ -79,48 +79,55 @@ function DatController(gui, structure, draw, calcCall) {
     // Add the buttons to the screen. Each component type has it's own subfolder
     //
     // Nodes
-    var components_group = gui.addFolder('Add Components');
+    var components_group = comp_gui.addFolder('Add Components');
     components_group.open();
-    var f1 = components_group.addFolder('Add Node');
+    var f1 = components_group.addFolder('Node');
+    addButtonControl(f1, components_controls, 'addNode', "Add");
     addStringControl(f1, components_controls, 'x', 'x');
     addStringControl(f1, components_controls, 'y', 'y');
-    addArrayControl(f1, components_controls, 'fixed', 'fixeda' ,[true,false]);
-    addButtonControl(f1, components_controls, 'addNode', "Add Node");
+    addArrayControl(f1, components_controls, 'fixed', 'fixed' ,[true,false]);
 
     // Elements
-    var f2 = components_group.addFolder('Add Element');
+    var f2 = components_group.addFolder('Element');
 
-    n1list = f2.add(components_controls, 'n1', structure.getNodeArray())
-        .listen();
-    n2list = f2.add(components_controls, 'n2', structure.getNodeArray())
-        .listen();
-
-    addElement = f2.add(components_controls, 'addElement');
-
-    function updateElementGUI() {
-        f2.remove(n1list);
-        f2.remove(n2list);
-
-        n1list = f2.add(components_controls, 'n1', structure.getNodeArray())
+    addButtonControl(f2, components_controls, 'addElement', "Add");
+    function addElementLists() {
+        n1list = f2.add(components_controls, 'n1', structure.getNodeArray()) 
             .listen();
-        n2list = f2.add(components_controls, 'n2', structure.getNodeArray())
+        n2list = f2.add(components_controls, 'n2', structure.getNodeArray()) 
             .listen();
     }
-    updateElementGUI();
+    addElementLists();
+
+
+    function UpdateElementGUI() {
+        f2.remove(n1list);
+        f2.remove(n2list);
+        addElementLists();
+    }
+    UpdateElementGUI();
 
     // Loads
-    var f3 = components_group.addFolder('Add Load');
-    f3.add(components_controls, 'addLoad');
+    var f3 = components_group.addFolder('Load');
+    f3.add(components_controls, 'addLoad').name("Add");
     f3.add(components_controls, 'type', ['UDL', 'Point']).listen();
     f3.add(components_controls, 'magnitude').listen();
     f3.add(components_controls, 'position').listen();
-    elist = f3.add(components_controls, 'element', structure.getElementArray()).listen();
 
-    function updateLoadGUI() {
-        f3.remove(elist);
-        elist = f3.add(components_controls, 'element', structure.getElementArray()).listen();
+    function addLoadList() {
+        elist = f3.add(
+            components_controls, 
+            'element', 
+            structure.getElementArray())
+            .listen();
     }
-    updateElementGUI();
+    addLoadList();
+
+    function UpdateLoadGUI() {
+        f3.remove(elist);
+        addLoadList();
+    }
+    UpdateLoadGUI();
 
     components_group.add(components_controls, 'clear');
 
@@ -128,8 +135,9 @@ function DatController(gui, structure, draw, calcCall) {
 ////////////////////////////////////////////////////////////////////////////////
     // Controls
     var settings_controls = new function() {
+        var settings = this;
         this.showLoads = true; 
-        this.showDisplacements = true;
+        this.showDisplacements = false;
         this.calculate = function () {
             var addressString = "http://localhost:8000/calculate?";
             addressString += JSON.stringify(structure);
@@ -138,6 +146,14 @@ function DatController(gui, structure, draw, calcCall) {
             xhttp.onreadystatechange = function() {
                 if(this.readyState == 4 && this.status == 200){
                     structure.addNodeDisplacements(JSON.parse(xhttp.responseText));
+                    alert("Calculation Succesful")
+                    settings.showLoads = false;
+                    draw.settings.drawLoads = false;
+                    settings.showDisplacements = true;
+                    draw.settings.drawDisps = true;
+                    UpdateSettingsGui();
+                }
+                else{
                 }
             }
             xhttp.open("GET", addressString, true);
@@ -145,25 +161,43 @@ function DatController(gui, structure, draw, calcCall) {
         }
     }
 
-    // Add buttons to gui
-    var settings_group = gui.addFolder('Settings');
+    // Add buttons to comp_gui
+    var settings_group = settings_gui.addFolder('Settings');
     settings_group.open();
-    show = settings_group.add(settings_controls, 'showLoads', true);
-    show_disp = settings_group.add(settings_controls, 'showDisplacements', true);
     settings_group.add(settings_controls, 'calculate');
 
-    // Event listeners
-    show.onChange(function(value) {
-        draw.settings.drawLoads = value;
-        draw.redraw();
-    });
+    function AddShowButtons() {
+        show_loads = 
+            settings_group.add(settings_controls,
+            'showLoads',
+            this.showLoads);
+        show_disp = 
+            settings_group.add(settings_controls, 
+            'showDisplacements', 
+            this.showDisplacements);
 
-    show_disp.onChange(function(v) {
-        draw.settings.drawDisps = v;
-        draw.redraw();
-    })
+        // Event listeners
+        show_loads.onChange(function(value) {
+            draw.settings.drawLoads = value;
+            draw.redraw();
+        });
 
-//////////////////////////////////////////////////////////////////////
+        show_disp.onChange(function(v) {
+            draw.settings.drawDisps = v;
+            draw.redraw();
+        })
+    }
+    AddShowButtons();
+
+    function UpdateSettingsGui() {
+        settings_group.remove(show_loads); 
+        settings_group.remove(show_disp); 
+        AddShowButtons();
+        draw.redraw();
+    }
+
+
+    //////////////////////////////////////////////////////////////////////
     // Helper Functions
     //////////////////////////////////////////////////////////////////////
 
