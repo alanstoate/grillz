@@ -1,1 +1,1 @@
-web: ROCKET_PORT=$PORT ROCKET_ENV=prod ./target/release/grill_web
+web: ROCKET_PORT=$PORT ROCKET_ENV=prod ./target/release/alancad
