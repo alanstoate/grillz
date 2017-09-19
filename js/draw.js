@@ -1,14 +1,20 @@
-function Draw(scene, structure) {
+function Draw(scene, structure, camera) {
     var draw = new function() {
-
+        _this = this;
         // Public variables
         this.settings = {
             drawLoads: true, 
             drawDisps: true
         }
 
+        this.labels = [];
+
         // Public Functions
         this.redraw = function(){
+            this.labels.forEach(function (x) {
+                document.body.removeChild(x.element);
+            })
+            labels = [];
             scene.remove(group);
             group = new THREE.Group();
             scene.add(group);
@@ -27,6 +33,13 @@ function Draw(scene, structure) {
             }
         }
 
+        this.updateLabelPositions = function() {
+            _this.labels.forEach(function (x) {
+                x.updatePosition(camera);
+            });
+        }
+
+
         // Internals
         var group = new THREE.Group();
         scene.add(group);
@@ -44,6 +57,7 @@ function Draw(scene, structure) {
 
             mesh.position.x = n.x;
             mesh.position.y = n.y;
+
 
             addToGroup(mesh);
         }
@@ -118,6 +132,41 @@ function Draw(scene, structure) {
                 drawLine(x,y,0.1,x,y,load,0x009999);
             }
         }
+        
+        function create_label() {
+            var text2 = document.createElement('text');
+            text2.style.position = 'absolute'
+	    text2.style.position = 'absolute';
+	    //text2.style.zIndex = 1; 
+	    text2.style.width = 100;
+	    text2.style.height = 100;
+	    text2.style.backgroundColor = "white";
+	    text2.innerHTML = "";
+            
+            return {
+                element: text2,
+                position: new THREE.Vector3(0,0,0),
+                setHTML: function(html) {
+                    this.element.innerHTML = html;
+                },
+                setPosition: function(x,y,z) {
+                    this.position.x = x;
+                    this.position.x = y;
+                    this.position.x = z;
+                },
+                updatePosition: function(camera) {
+                    var coords2d = this.get2DCoords(this.position, camera);
+                    this.element.style.left = coords2d.x + 'px';
+                    this.element.style.top = coords2d.y + 'px';
+                },
+                get2DCoords: function(position, camera) {
+                    var vector = position.project(camera);
+                    vector.x = (vector.x + 1)/2 * window.innerWidth;
+                    vector.y = -(vector.y - 1)/2 * window.innerHeight;
+                    return vector;
+                }
+            };
+        }
 
         var drawDisps = function (node) {
             if(node.displacement != null) {
@@ -131,6 +180,7 @@ function Draw(scene, structure) {
                 drawLine(x, y, 0, -rotX, y,    0,      0x000099);
                 drawLine(x, y, 0, x,     y,    0,      0x009900);
                 drawLine(x, y, 0, x,     y,    -transZ,0x009900);
+
             }
         }
     }

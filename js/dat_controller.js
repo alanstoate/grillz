@@ -22,7 +22,7 @@ function DatController(comp_gui, settings_gui, structure, draw, calcCall) {
             t.y = '0';
             t.fixed = false;
         }
-        resetNodes(this);
+        resetNodes(cont);
 
         this.addNode = function() {
             var addNodeFunc = function() {
@@ -36,14 +36,29 @@ function DatController(comp_gui, settings_gui, structure, draw, calcCall) {
 
         // Elements---------------------------------------- 
         function resetElements(t) {
-            t.n1 = '0';
-            t.n2 = '0';
+            t.n1 = 'null';
+            t.n2 = 'null';
         }
-        resetElements(this);
+        resetElements(cont);
+
+        function validateAddElement(n1, n2) {
+            var nodeError = "invalid node";
+            var error = false;
+            if (!validateNotNullInput(n1, nodeError)) error = true;
+            if (!validateNotNullInput(n2, nodeError)) error = true;
+            if (!structure.checkForDuplicateElement(n1, n2)){
+                alert("Error: Duplicate element");
+                error = true;
+            };
+
+            return !error;
+        }
 
         this.addElement = function() {
-            var addElementFunc = function(){
-                structure.addElement(cont.n1, cont.n2);
+            if (validateAddElement(cont.n1, cont.n2)) {
+                var addElementFunc = function(){
+                    structure.addElement(cont.n1, cont.n2);
+                }
             }
 
             addComponent(addElementFunc, resetElements, [UpdateLoadGUI]);
@@ -51,16 +66,17 @@ function DatController(comp_gui, settings_gui, structure, draw, calcCall) {
 
         // Loads----------------------------------------
         function resetLoads(t) {
-            t.element = '';
-            t.type = '';
+            t.element = 'null';
+            t.type = 'null';
             t.magnitude = '';
             t.position = '';
         }
-        resetLoads(this);
+        resetLoads(cont);
 
         this.addLoad = function() {
             var addLoadFunc = function (){
-                structure.addLoad(cont.element, cont.type, 
+                if (validateFloat(cont.magnitude) && validateFloat(cont.position))
+                    structure.addLoad(cont.element, cont.type, 
                                   cont.magnitude, cont.position);
             }
             addComponent(addLoadFunc, resetLoads);
@@ -68,7 +84,12 @@ function DatController(comp_gui, settings_gui, structure, draw, calcCall) {
 
         // Clear ----------------------------------------
         this.clear = function () {
+            resetNodes(cont);
+            resetElements(cont);
+            resetLoads(cont);
             structure.reset();
+            UpdateElementGUI();
+            UpdateLoadGUI();
             draw.redraw();
         }
     }
@@ -203,7 +224,7 @@ function DatController(comp_gui, settings_gui, structure, draw, calcCall) {
 
     function validateInput(func, input, error) {
         if(func(input) == false){
-            alert(error);
+            alert("Error: " + error);
             return false;
         }
         else return true;
@@ -214,6 +235,13 @@ function DatController(comp_gui, settings_gui, structure, draw, calcCall) {
             return isNaN(_in) ? false : true;
         }
         return validateInput(func, input, "Enter a valid number");
+    }
+
+    function validateNotNullInput(input, msg) {
+        var func = function(_in) {
+            return _in != 'null';
+        }
+        return validateInput(func, input, msg);
     }
 
     function addStringControl (folder, controls, control, name) {

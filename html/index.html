@@ -86,7 +86,7 @@
                     structure.addLoad(0, 'UDL', 5, 0.0);
                     structure.addLoad(1, 'Point', 7.5, 2.5);
                 }());
-                draw = Draw(scene, structure);                
+                draw = Draw(scene, structure, camera);                
                 draw.redraw();
                 components_gui = new dat.GUI();
                 settings_gui = new dat.GUI();
@@ -97,6 +97,7 @@
                     var delta = clock.getDelta();
                     orbitControls.update(delta);
                     requestAnimationFrame(render);
+                    draw.updateLabelPositions();
 
                     renderer.render(scene, camera);
                 }

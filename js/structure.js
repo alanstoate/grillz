@@ -43,17 +43,17 @@ function Structure() {
 
         this.addElement = function(_n1, _n2) {
             this.elements.push( {
-                n1: _n1,
-                n2: _n2
+                n1: parseInt(_n1),
+                n2: parseInt(_n2)
             });
         }
 
         this.addLoad = function(_element, _loadType, _mag, _pos) {
             this.loads.push({
-                element: _element,
+                element: parseInt(_element),
                 loadtype: _loadType,
-                magnitude: _mag,
-                position: _pos
+                magnitude: parseFloat(_mag),
+                position: parseFloat(_pos)
             });
         }
 
@@ -61,6 +61,18 @@ function Structure() {
             this.nodes.length = 0;
             this.elements.length = 0;
             this.loads.length = 0;
+        }
+
+        // Error Checkers
+
+        // Returns true if n1 and n2 dont already define an element
+        this.checkForDuplicateElement = function(n1, n2) {
+            var noDuplicated = true;
+            this.elements.forEach(function (x) {
+                if ((n1 == x.n1 && n2 == x.n2) || (n1 == x.n2 && n2 == x.n1))
+                    noDuplicated = false;
+            })
+        return noDuplicated;
         }
     }
 
