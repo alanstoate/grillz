@@ -4,10 +4,9 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <title>AlanCad - A toy matrix method cad program (Under Construction)</title>
-        <script type="text/javascript" src="../js/three.js"></script>
-        <script type="text/javascript" src="../js/OrbitControls.js"></script>
-        <script type="text/javascript" src="../js/dat.gui.js"></script>
-
+        <script type="text/javascript" src="../js/lib/three.js"></script>
+        <script type="text/javascript" src="../js/lib/OrbitControls.js"></script>
+        <script type="text/javascript" src="../js/lib/dat.gui.js"></script>
         <script type="text/javascript" src="../js/draw.js"></script>
         <script type="text/javascript" src="../js/dat_controller.js"></script>
         <script type="text/javascript" src="../js/structure.js"></script>
@@ -50,9 +49,9 @@
                 // create a render and set the size
                 renderer = new THREE.WebGLRenderer();
 
-                renderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0));
+                renderer.setClearColor(new THREE.Color(0x888888));
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.shadowMapEnabled = true;
+                renderer.shadowMap.enabled = true;
 
                 // position and point the camera to the center of the scene
                 camera.position.x = 0;

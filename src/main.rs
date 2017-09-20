@@ -10,9 +10,9 @@ use parser::run_calculation;
 
 use rocket::response::{NamedFile, content};
 
-#[get("/js/three.js")]
+#[get("/js/lib/three.js")]
 fn js_grill() -> content::Html<NamedFile> {
-    let file = NamedFile::open("js/three.js");
+    let file = NamedFile::open("js/lib/three.js");
     content::Html(file.unwrap())
 }
 
@@ -28,15 +28,15 @@ fn js_dat_controller() -> content::Html<NamedFile> {
     content::Html(file.unwrap())
 }
 
-#[get("/js/dat.gui.js")]
+#[get("/js/lib/dat.gui.js")]
 fn js_dat_gui() -> content::Html<NamedFile> {
-    let file = NamedFile::open("js/dat.gui.js");
+    let file = NamedFile::open("js/lib/dat.gui.js");
     content::Html(file.unwrap())
 }
 
-#[get("/js/OrbitControls.js")]
+#[get("/js/lib/OrbitControls.js")]
 fn js_orbit() -> content::Html<NamedFile> {
-    let file = NamedFile::open("js/OrbitControls.js");
+    let file = NamedFile::open("js/lib/OrbitControls.js");
     content::Html(file.unwrap())
 }
 

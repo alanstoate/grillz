@@ -87,8 +87,19 @@ function Draw(scene, structure, camera) {
 
             mesh.rotation.z = rotz;
         }
+        var drawArrow = function (x, y, z, direction, color) {
+            var geometry = new THREE.ConeGeometry(0.2, 1, 10);
+            var material = new THREE.MeshBasicMaterial( { color: color } );
+            var cone = new THREE.Mesh(geometry, material);
+            cone.position.x = x;
+            cone.position.y = y;
+            cone.position.z = z;
+            var dir = direction >=0 ? 1 : -1;
+            cone.rotation.x = dir * -Math.PI / 2;
+            addToGroup(cone);
+        }
 
-        var drawLine = function (x1, y1, z1, x2, y2, z2, color) {
+        function drawLine (x1, y1, z1, x2, y2, z2, color) {
             var material = new THREE.LineBasicMaterial({ color: color });
             var geometry = new THREE.Geometry();
             geometry.vertices.push(new THREE.Vector3(x1,y1,z1));
@@ -121,7 +132,8 @@ function Draw(scene, structure, camera) {
                     var x = x1 + (dx) * (i / 10);
                     var y = y1 + (dy) * (i / 10);
 
-                    drawLine(x,y,0.1,x,y,load, 0xff0000);
+                    drawLine(x,y,1,x,y,load, 0xff0000);
+                    drawArrow(x,y,1, load, 0xff0000);
 
                 }
             }
@@ -177,9 +189,13 @@ function Draw(scene, structure, camera) {
                 var rotY = node.displacement.rotY;
                 var transZ = node.displacement.transZ;
 
+                var transColor = 0x00ff00;
+
                 drawLine(x, y, 0, -rotX, y,    0,      0x000099);
                 drawLine(x, y, 0, x,     y,    0,      0x009900);
-                drawLine(x, y, 0, x,     y,    -transZ,0x009900);
+                drawLine(x, y, 0, x,     y,    -transZ,transColor);
+
+                drawArrow(x,y,-transZ, transZ, transColor);
 
             }
         }
